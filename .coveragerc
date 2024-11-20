@@ -1,0 +1,10 @@
+[coverage:run]
+branch = True
+
+[coverage:report]
+omit =
+    */migrations/*
+    */settings.py
+    */manage.py
+    */gestion_mediatheque/apps.py
+    */mediatheque/wsgi.py

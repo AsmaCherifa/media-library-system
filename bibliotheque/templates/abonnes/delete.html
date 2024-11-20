@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supprimer Abonné</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    {% include "navbar.html" %}
+
+<div class="container mt-4">
+    <h1 class="text-center text-danger">Delete Abonné</h1>
+    <p class="text-center mt-3">
+        Etes-vous sûr de vouloir supprimer <strong>{{ abonne.nom }} {{ abonne.prenom }}</strong>?
+    </p>
+    <div class="d-flex justify-content-center mt-3">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger me-2">Oui</button>
+        </form>
+        <a href="{% url 'abonne_list' %}" class="btn btn-secondary">Annuler</a>
+    </div>
+</div>
+</body>
+</html>
