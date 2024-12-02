@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Abonne, Document, Emprunt
 from .forms import AbonneForm, DocumentForm, EmpruntForm
+from django.http import JsonResponse
+from prometheus_client import Counter
+from django.db.models import Q
 
 
 def abonne_list(request):
@@ -36,6 +39,19 @@ def abonne_delete(request, pk):
         return redirect('abonne_list')
     return render(request, 'abonnes/delete.html', {'abonne': abonne})
 
+def chercher_abonne(request):
+    query = request.GET.get('q')  # Récupérer le mot-clé depuis les paramètres GET
+    if query:
+        abonnes = Abonne.objects.filter(
+            Q(nom__icontains=query) |
+            Q(prenom__icontains=query) |
+            Q(adresse__icontains=query) |
+            Q(date_inscription__icontains=query)  # Recherche par date
+        )
+    else:
+        abonnes = Abonne.objects.all()
+    return render(request, 'abonnes/abonne_list.html', {'abonnes': abonnes})
+
 
 # Document Views
 def document_list(request):
@@ -70,6 +86,29 @@ def document_delete(request, pk):
         return redirect('document_list')
     return render(request, 'documents/document_delete.html', {'document': document})
 
+def chercher_document(request):
+    query = request.GET.get('q')
+    if query:
+        documents = Document.objects.filter(
+            Q(titre__icontains=query) |
+            Q(auteur__icontains=query) |
+            Q(type__icontains=query)
+        )
+    else:
+        documents = Document.objects.all()
+    
+    # Add a message if no documents are found
+    message = None
+    if query and not documents.exists():
+        message = "No results found."
+    
+    return render(request, 'documents/document_list.html', {
+        'documents': documents,
+        'query': query,
+        'message': message,
+    })
+
+
 # Emprunt Views
 def emprunt_list(request):
     emprunts = Emprunt.objects.all()
@@ -84,6 +123,8 @@ def emprunt_create(request):
     else:
         form = EmpruntForm()
     return render(request, 'emprunts/emprunt_create.html', {'form': form})
+
+
 
 def emprunt_update(request, pk):
     emprunt = get_object_or_404(Emprunt, pk=pk)
@@ -103,6 +144,20 @@ def emprunt_delete(request, pk):
         return redirect('emprunt_list')
     return render(request, 'emprunts/emprunt_delete.html', {'emprunt': emprunt})
 
+def chercher_emprunt(request):
+    query = request.GET.get('q')  # Récupérer le mot-clé des paramètres GET
+    if query:
+        # Filtrer les emprunts par plusieurs champs
+        emprunts = Emprunt.objects.filter(
+            Q(abonne__nom__icontains=query) |  # Recherche par le nom de l'abonné
+            Q(abonne__prenom__icontains=query) |  # Recherche par le prénom de l'abonné
+            Q(document__titre__icontains=query) |  # Recherche par le titre du document
+            Q(statut_emprunt__icontains=query)  # Recherche par statut d'emprunt
+        )
+    else:
+        emprunts = Emprunt.objects.all()  # Si aucun mot-clé, retourner tous les emprunts
+    return render(request, 'emprunts/emprunt_list.html', {'emprunts': emprunts})
+
 
 def tableau_de_bord(request):
     # Statistiques
@@ -121,3 +176,10 @@ def tableau_de_bord(request):
         'derniers_emprunts': derniers_emprunts,
     }
     return render(request, 'tableau_de_bord.html', context)
+
+
+'''api_requests_total = Counter('api_requests_total', 'Total API requests', ['endpoint'])
+
+def example_view(request):
+    api_requests_total.labels(endpoint='example_view').inc() 
+    return JsonResponse({'message': 'Hello, Prometheus!'})'''

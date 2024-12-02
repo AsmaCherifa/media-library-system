@@ -1,4 +1,8 @@
 from djongo import models
+from django.core.exceptions import ValidationError
+from datetime import date
+
+
 
 class Emprunt(models.Model):
     abonne = models.ForeignKey('Abonne', on_delete=models.CASCADE)
@@ -18,7 +22,8 @@ class Abonne(models.Model):
 
     def __str__(self):
         return f"{self.nom} {self.prenom}"
-
+    
+        
 class Document(models.Model):
     titre = models.CharField(max_length=200)
     type = models.CharField(max_length=100) 

@@ -1,14 +1,16 @@
 from rest_framework import serializers
-from .models import Abonne, Document, Emprunt
+from .models import Emprunt, Abonne, Document
+from datetime import date
 
 class EmpruntSerializer(serializers.ModelSerializer):
     class Meta:
         model = Emprunt
         fields = '__all__'
 
+
 class AbonneSerializer(serializers.ModelSerializer):
-    liste_emprunts = EmpruntSerializer(many=True, read_only=True, source='emprunt_set')  # Utilise la relation inversée
-    historique_emprunts = EmpruntSerializer(many=True, read_only=True, source='emprunt_set')  # À ajuster selon logique
+    liste_emprunts = EmpruntSerializer(many=True, read_only=True, source='emprunt_set')
+    historique_emprunts = EmpruntSerializer(many=True, read_only=True, source='emprunt_set')  
 
     class Meta:
         model = Abonne

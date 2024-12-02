@@ -23,4 +23,9 @@ urlpatterns = [
 
     path('tableau-de-bord/', views.tableau_de_bord, name='tableau_de_bord'),
 
+    path('chercher_abonne/', views.chercher_abonne, name='chercher_abonne'),
+    path('chercher_document/', views.chercher_document, name='chercher_document'),
+    path('chercher_emprunt/', views.chercher_emprunt, name='chercher_emprunt'),
+
+
 ]

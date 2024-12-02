@@ -10,51 +10,49 @@
 <body>
     {% include "navbar.html" %}
 
-          <div class="container mt-4">
-            <h1 class="text-center">Liste des Abonnés</h1>
-            <div>
-                <a href="{% url 'abonne_create' %}" class="btn btn-success btn-sm" >Ajouter un Abonne</a>
-            </div>
-            <input type="text" id="searchInput" class="form-control mb-3" placeholder="Chercher Abonnés...">
-            <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
-
-
-            <tr>
-                <th>Nom</th>
-                <th>Prenom</th>
-                <th>Adresse</th>
-                <th>Date Inscription</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for abonne in abonnes %}
+    <div class="container mt-4">
+        <h1 class="text-center">Liste des Abonnés</h1>
+        <div>
+            <a href="{% url 'abonne_create' %}" class="btn btn-success btn-sm">Ajouter un Abonné</a>
+            
+            <!-- Formulaire de recherche -->
+            <form action="{% url 'chercher_abonne' %}" method="get" class="d-inline">
+                <input type="text" id="searchInput" name="q" class="form-control d-inline mb-3 w-50" 
+                       placeholder="Chercher Abonnés..." value="{{ request.GET.q|default:'' }}">
+                <button type="submit" class="btn btn-primary btn-sm">Chercher</button>
+            </form>
+        </div>
+    
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="thead-dark">
                 <tr>
-                    <td>{{ abonne.nom }}</td>
-                    <td>{{ abonne.prenom }}</td>
-                    <td>{{ abonne.adresse }}</td>
-                    <td>{{ abonne.date_inscription }}</td>
-                    <td>
-                        
-
-
-                        <a href="{% url 'abonne_update' abonne.pk %}" class="btn btn-warning btn-sm">
-                          <i class="bi bi-pencil-square"></i> Modifier
-                      </a>
-                      <a href="{% url 'abonne_delete' abonne.pk %}" class="btn btn-danger btn-sm">
-                          <i class="bi bi-trash"></i> Supprimer
-                      </a>
-
-
-                    </td>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Adresse</th>
+                    <th>Date Inscription</th>
+                    <th>Actions</th>
                 </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="5">No abonnés available.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for abonne in abonnes %}
+                    <tr>
+                        <td>{{ abonne.nom }}</td>
+                        <td>{{ abonne.prenom }}</td>
+                        <td>{{ abonne.adresse }}</td>
+                        <td>{{ abonne.date_inscription }}</td>
+                        <td>
+                            <a href="{% url 'abonne_update' abonne.pk %}" class="btn btn-warning btn-sm">Modifier</a>
+                            <a href="{% url 'abonne_delete' abonne.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">Aucun abonné trouvé.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
 </body>
 </html>
