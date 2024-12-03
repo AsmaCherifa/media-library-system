@@ -5,6 +5,7 @@ from . import views
 router = DefaultRouter()
 urlpatterns = [
     path('', include(router.urls)),
+    path('login/', views.login, name='login'),
 
     path('abonnes/', views.abonne_list, name='abonne_list'),
     path('abonnes/create/', views.abonne_create, name='abonne_create'),

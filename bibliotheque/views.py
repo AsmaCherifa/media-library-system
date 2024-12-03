@@ -2,9 +2,22 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Abonne, Document, Emprunt
 from .forms import AbonneForm, DocumentForm, EmpruntForm
 from django.http import JsonResponse
-from prometheus_client import Counter
+from django.conf import settings
 from django.db.models import Q
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
+
+def login(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if username == "asma" and password == "asma":
+            return redirect('abonne_list')
+        else:
+            messages.error(request, "Invalid username or password")
+
+    return render(request, 'login.html')
 
 def abonne_list(request):
     abonnes = Abonne.objects.all()  # Get all abonnés
